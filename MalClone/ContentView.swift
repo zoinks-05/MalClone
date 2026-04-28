@@ -20,7 +20,8 @@ struct ContentView: View {
         .task {
             do {
                 print("🔵 fetching anime id 1...")
-                let json = try await APIService.shared.fetchAnimeFull(id: 1)
+                let json = try await APIService.shared.fetchAnimeFull(id: 31
+)
                 print("🟢 raw response: \(json)")
                 
                 let data = json["data"] as? [String: Any]

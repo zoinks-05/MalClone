@@ -24,18 +24,20 @@ final class APIService {
         return try await fetch("\(jikanBaseURL)/anime/\(id)/full")
     }
 
-    func searchAnime(query: String, limit: Int = 5) async throws -> [String: Any] {
+    func searchAnime(query: String, limit: Int = 5, orderBy: String = "popularity", sort: String = "desc") async throws -> [String: Any] {
         let q = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
-        return try await fetch("\(jikanBaseURL)/anime?q=\(q)&limit=\(limit)")
+        return try await fetch("\(jikanBaseURL)/anime?q=\(q)&limit=\(limit)&order_by=\(orderBy)&sort=\(sort)")
     }
 
-    func searchAnimePaged(query: String, page: Int = 1) async throws -> [String: Any] {
+    func searchAnimePaged(query: String, page: Int = 1, orderBy: String = "popularity", sort: String = "desc") async throws -> [String: Any] {
         let q = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
-        return try await fetch("\(jikanBaseURL)/anime?q=\(q)&limit=25&page=\(page)")
+        return try await fetch("\(jikanBaseURL)/anime?q=\(q)&limit=25&page=\(page)&order_by=\(orderBy)&sort=\(sort)")
     }
 
-    func fetchTopAnime() async throws -> [String: Any] {
-        return try await fetch("\(jikanBaseURL)/top/anime?limit=25")
+    func fetchTopAnime(type: String = "", filter: String = "bypopularity", page: Int = 1) async throws -> [String: Any] {
+        var path = "\(jikanBaseURL)/top/anime?limit=25&filter=\(filter)&page=\(page)"
+        if !type.isEmpty { path += "&type=\(type)" }
+        return try await fetch(path)
     }
 
     func fetchSeasonalAnime() async throws -> [String: Any] {
@@ -48,26 +50,6 @@ final class APIService {
 
     func fetchAnimeByGenre(genreId: Int, page: Int = 1) async throws -> [String: Any] {
         return try await fetch("\(jikanBaseURL)/anime?genres=\(genreId)&limit=25&page=\(page)")
-    }
-
-    func fetchEpisodes(id: Int, page: Int = 1) async throws -> [String: Any] {
-        return try await fetch("\(jikanBaseURL)/anime/\(id)/episodes?page=\(page)")
-    }
-
-    func fetchCharacters(id: Int) async throws -> [String: Any] {
-        return try await fetch("\(jikanBaseURL)/anime/\(id)/characters")
-    }
-
-    func fetchStaff(id: Int) async throws -> [String: Any] {
-        return try await fetch("\(jikanBaseURL)/anime/\(id)/staff")
-    }
-
-    func fetchRecommendations(id: Int) async throws -> [String: Any] {
-        return try await fetch("\(jikanBaseURL)/anime/\(id)/recommendations")
-    }
-
-    func fetchPictures(id: Int) async throws -> [String: Any] {
-        return try await fetch("\(jikanBaseURL)/anime/\(id)/pictures")
     }
     
     func fetchAniListImages(malId: Int) async throws -> [String: Any] {

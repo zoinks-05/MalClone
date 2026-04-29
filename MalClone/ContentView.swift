@@ -6,10 +6,54 @@
 //
 import SwiftUI
 
+enum Tab {
+    case home, top, search, profile, settings, demo
+}
+
 struct ContentView: View {
+    @State private var selectedTab: Tab = .home
+    
     var body: some View{
-        VStack{
-            Text("E")
+        VStack(spacing: 0){
+            
+            HStack {
+                Text("NotMAL")
+                    .font(.system(size: 24, weight: .heavy, design: .rounded))
+                Spacer()
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .background(Color(red:0.4, green: 0, blue: 0.6))
+            
+            
+            //NOTE Text(String) is temporary once you make a view
+            // Example:
+            // HomeView()
+            // .tag
+            // .tabItem
+            TabView(selection: $selectedTab){
+                Text("Home")
+                    .tag(Tab.home)
+                    .tabItem{Label("Home", systemImage: "house.fill")}
+                
+                Text("Top")
+                    .tag(Tab.top)
+                    .tabItem{Label("Top", systemImage: "chart.bar.fill")}
+                
+                Text("Search")
+                    .tag(Tab.search)
+                    .tabItem{Label("Search", systemImage: "magnifyingglass")}
+                Text("Profile")
+                    .tag(Tab.profile)
+                    .tabItem{Label("Profile", systemImage: "person.fill")}
+                Text("Settings")
+                    .tag(Tab.settings)
+                    .tabItem{Label("Settings", systemImage: "gearshape.fill")}
+                DemoView()
+                    .tag(Tab.demo)
+                    .tabItem{Label("demo", systemImage: "gearshape.fill")}
+            }
+            .tabViewStyle(.automatic)
         }
     }
 }

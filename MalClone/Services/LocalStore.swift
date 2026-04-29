@@ -14,21 +14,58 @@ final class LocalStore{
     private let key = "user"
     private(set) var user: User = .guest
     
-    private func save(){}
+    private func save(){
+        if let encoded = try? JSONEncoder().encode(user) {
+            UserDefaults.standard.set(encoded, forKey: key)
+        }
+    }
     
-    private func loadUser(){}
+    private func loadUser(){
+        guard let data = UserDefaults.standard.data(forKey: key),
+              let decoded = try? JSONDecoder().decode(User.self, from: data)
+        else {return}
+        user = decoded
+    }
     
-    func updateProfile(){}
+    func updateProfile(name: String, bio: String){
+        user.name = name
+        user.bio = bio
+        save()
+    }
     
-    func addToWatchList(){}
+    func addToWatchList(id: Int, title: String, status: WatchStatus, score: Int?){
+        guard !user.watchlist.contains(where: {$0.id == id}) else { return }
+        user.watchlist.append(WatchListEntry(id:id,title: title, status: status, score: score))
+        save()
+    }
     
-    func removeFromWatchList(){}
+    func removeFromWatchList(id: Int){
+        user.watchlist.removeAll {$0.id == id}
+        save()
+    }
     
-    func updateWatchList(){}
+    func updateWatchList(id:Int, status: WatchStatus, score: Int?){
+        guard let i = user.watchlist.firstIndex(where: {$0.id == id}) else { return }
+        user.watchlist[i].status = status
+        user.watchlist[i].score = score
+        save()
+    }
     
-    func addReview(){}
+    func addReview(Id: Int, title: String, body: String, isSpoiler: Bool){
+        user.reviews.insert(Review(animeId: Id, title: title, body: body, isSpoiler: isSpoiler), at: 0)
+        save()
+    }
     
-    func deleteReview(){}
+    func deleteReview(id: UUID){
+        user.reviews.removeAll {$0.id == id}
+        save()
+    }
     
-    func updateReview(){}
+    func updateReview(id: UUID, title: String, body: String, isSpoiler: Bool){
+        guard let i = user.reviews.firstIndex(where: {$0.id == id}) else { return }
+        user.reviews[i].title = title
+        user.reviews[i].body = body
+        user.reviews[i].isSpoiler = isSpoiler
+        save()
+    }
 }

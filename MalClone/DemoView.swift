@@ -38,10 +38,42 @@ struct DemoView: View {
 
                 Section("2. AniList image fetch — mal id 1") {
                     Button("Fetch Images") { Task { await demoImages() } }
-                    if !coverURL.isEmpty  { row("Cover",  coverURL)  }
-                    if !bannerURL.isEmpty { row("Banner", bannerURL) }
-                }
 
+                    if !coverURL.isEmpty {
+                        AsyncImage(url: URL(string: coverURL)) { phase in
+                            switch phase {
+                            case .success(let img):
+                                img.resizable().scaledToFit().clipShape(RoundedRectangle(cornerRadius: 8))
+                            case .empty:
+                                ProgressView()
+                            case .failure:
+                                Text("cover failed").foregroundStyle(.red)
+                            @unknown default:
+                                EmptyView()
+                            }
+                        }
+                        .frame(height: 180)
+                    }
+
+                    if !bannerURL.isEmpty {
+                        AsyncImage(url: URL(string: bannerURL)) { phase in
+                            switch phase {
+                            case .success(let img):
+                                img.resizable().scaledToFill().clipShape(RoundedRectangle(cornerRadius: 8))
+                            case .empty:
+                                ProgressView()
+                            case .failure:
+                                Text("banner failed").foregroundStyle(.red)
+                            @unknown default:
+                                EmptyView()
+                            }
+                        }
+                        .frame(height: 120)
+                        .clipped()
+                    }
+
+                    if !fetchLog.isEmpty { logBlock(fetchLog) }
+                }
                 // ── Local store ───────────────────────────────────
                 Section("3. Watchlist") {
                     Button("Add Cowboy Bebop → Watching, score 9") {
@@ -86,7 +118,7 @@ struct DemoView: View {
         fetchLog = ["🔵 calling fetchAniListImages(malId: 1)..."]
         do {
             let json   = try await APIService.shared.fetchAniListImages(malId: 1)
-            let data   = json["data"]  as? [String: Any]
+            let data   = json["data"]   as? [String: Any]
             let media  = data?["Media"] as? [String: Any]
             let cover  = media?["coverImage"] as? [String: Any]
             bannerURL  = media?["bannerImage"] as? String ?? "n/a"
@@ -97,7 +129,6 @@ struct DemoView: View {
             fetchLog.append("🔴 \(error.localizedDescription)")
         }
     }
-
     func demoWatchlist() {
         watchlistLog = []
         LocalStore.shared.addToWatchList(id: 1, title: "Cowboy Bebop", status: .watching, score: nil)

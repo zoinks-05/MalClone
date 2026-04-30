@@ -40,7 +40,7 @@ struct ContentView: View {
                     .tag(Tab.top)
                     .tabItem{Label("Top", systemImage: "chart.bar.fill")}
                 
-                Text("Search")
+                SearchView()
                     .tag(Tab.search)
                     .tabItem{Label("Search", systemImage: "magnifyingglass")}
                 Text("Profile")

@@ -7,6 +7,19 @@
 
 import Foundation
 
+enum OrderBy: String, CaseIterable {
+    case title     = "title"
+    case startDate = "start_date"
+    case endDate   = "end_date"
+    case episodes  = "episodes"
+    case score     = "score"
+    case scoredBy  = "scored_by"
+    case rank      = "rank"
+    case popularity = "popularity"
+    case members   = "members"
+    case favorites = "favorites"
+}
+
 private let jikanBaseURL = "https://api.jikan.moe/v4"
 private let aniListURL   = "https://graphql.anilist.co"
 
@@ -29,9 +42,10 @@ final class APIService {
         return try await fetch("\(jikanBaseURL)/anime?q=\(q)&limit=\(limit)&order_by=\(orderBy)&sort=\(sort)")
     }
 
-    func searchAnimePaged(query: String, page: Int = 1, orderBy: String = "popularity", sort: String = "desc") async throws -> [String: Any] {
+    func searchAnimePaged(query: String, page: Int = 1, orderBy: OrderBy = OrderBy.popularity, sort: String = "desc") async throws -> [String: Any] {
         let q = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
-        return try await fetch("\(jikanBaseURL)/anime?q=\(q)&limit=25&page=\(page)&order_by=\(orderBy)&sort=\(sort)")
+        // fetch("\(jikanBaseURL)/anime?q=\(q)&limit=25&page=\(page)&order_by=\(orderBy)&sort=\(sort)")
+        return try await fetch("\(jikanBaseURL)/anime?q=\(q)&limit=25&page=\(page)")
     }
 
     func fetchTopAnime(type: String = "", filter: String = "bypopularity", page: Int = 1) async throws -> [String: Any] {

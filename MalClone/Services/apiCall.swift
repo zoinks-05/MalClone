@@ -45,7 +45,7 @@ final class APIService {
     func searchAnimePaged(query: String, page: Int = 1, orderBy: OrderBy = OrderBy.popularity, sort: String = "desc") async throws -> [String: Any] {
         let q = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
         // fetch("\(jikanBaseURL)/anime?q=\(q)&limit=25&page=\(page)&order_by=\(orderBy)&sort=\(sort)")
-        return try await fetch("\(jikanBaseURL)/anime?q=\(q)&limit=25&page=\(page)")
+        return try await fetch("\(jikanBaseURL)/anime?q=\(q)&limit=25&page=\(page)&order_by=\(orderBy.rawValue)&sort=\(sort)")
     }
 
     func fetchTopAnime(type: String = "", filter: String = "bypopularity", page: Int = 1) async throws -> [String: Any] {

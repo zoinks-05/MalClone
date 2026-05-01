@@ -7,14 +7,20 @@
 
 import SwiftUI
 
+struct AnimeID: Identifiable, Equatable {
+    let id: Int
+}
+
 struct SearchView: View{
     @State private var query = ""
-    @State private var sortType = "desc"
+    @State private var sortType = "asc"
     @State private var orderBy = OrderBy.popularity
     @State private var res: [[String: Any]] = []
-    @State private var cacheRes: [[String: Any]] = []
     @State private var pageData: [String: Any] = [:]
     @State private var isLoading = false
+    @State private var currentPage = 1
+    @State private var isFetchingMore = false
+    @State private var selectedId: AnimeID? = nil
 
     var body: some View{
         VStack {
@@ -26,7 +32,6 @@ struct SearchView: View{
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)
                         .onSubmit {
-                            cacheRes = []
                             Task { await fetchQuery() }
                         }
                     if !query.isEmpty {
@@ -44,7 +49,6 @@ struct SearchView: View{
                 
                 Button{
                     sortType = sortType == "asc" ? "desc" : "asc"
-                    cacheRes = []
                     Task { await fetchQuery() }
                 } label: {
                     Image(systemName: sortType == "asc" ? "arrow.up.circle" : "arrow.down.circle")
@@ -57,7 +61,6 @@ struct SearchView: View{
                     ForEach(OrderBy.allCases, id: \.self) { opt in
                         Button{
                             orderBy = opt
-                            cacheRes = []
                             Task { await fetchQuery() }
                         } label: {
                             Label(
@@ -112,11 +115,17 @@ struct SearchView: View{
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                             
                             // Info
+                            let isAiring = anime["airing"] as? Bool ?? false
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(anime["title"] as? String ?? "Unknown")
-                                    .font(.headline)
-                                    .lineLimit(1)
-                                    .padding(.top)
+                                HStack{
+                                    Image(systemName: isAiring ? "dot.radiowaves.left.and.right" : "pause.circle")
+                                        .foregroundStyle(isAiring ? .purple : .secondary)
+                                    Text(anime["title"] as? String ?? "Unknown")
+                                        .font(.headline)
+                                }
+                                .lineLimit(1)
+                                .padding(.top)
+                                .padding(.bottom, 2)
                                 HStack(spacing: 6){
                                     tags(anime)
                                 }
@@ -125,11 +134,31 @@ struct SearchView: View{
                             
                             Spacer()
                         }
+                        .onTapGesture {
+                            if let id = anime["mal_id"] as? Int {
+                                selectedId = AnimeID(id: id)
+                            }
+                        }
                         .padding(6)
                         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+                        .onAppear {
+                            if i ==  res.count - 1{
+                                Task { await nextPage()}
+                            }
+                        }
                     }
                     .padding(.horizontal, 12)
+                    
+                    if isFetchingMore{
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .gridCellColumns(col)
+                    }
                 }
+            }
+            .sheet(item: $selectedId) { animeID in
+                AnimeView(id: animeID.id)
             }
         }
     }
@@ -176,9 +205,13 @@ struct SearchView: View{
     func fetchQuery() async {
         guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         isLoading = true
+        currentPage = 1
         do {
             let json = try await APIService.shared.searchAnimePaged(
-                query: query
+                query: query,
+                page: currentPage,
+                orderBy: orderBy,
+                sort: sortType
             )
             res = json["data"] as? [[String: Any]] ?? []
             pageData = json["pagination"] as? [String: Any] ?? [:]
@@ -191,8 +224,21 @@ struct SearchView: View{
     }
     
     func nextPage() async {
-        cacheRes = res
-        
+        guard !isFetchingMore, pageData["has_next_page"] as? Bool == true else { return }
+        isFetchingMore = true
+        currentPage += 1
+        do {
+            let json = try await APIService.shared.searchAnimePaged(
+                query: query,
+                page: currentPage
+            )
+            let newItems = json["data"] as? [[String: Any]] ?? []
+            pageData = json["pagination"] as? [String: Any] ?? [:]
+            res.append(contentsOf: newItems)
+        } catch {
+            print(error.localizedDescription)
+        }
+        isFetchingMore = false
     }
     
     func imageURL(_ anime: [String: Any]) -> URL? {
@@ -201,4 +247,3 @@ struct SearchView: View{
         return URL(string: jpg?["image_url"] as? String ?? "")
     }
 }
-

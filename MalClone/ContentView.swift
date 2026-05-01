@@ -16,14 +16,21 @@ struct ContentView: View {
     var body: some View{
         VStack(spacing: 0){
             
-            HStack {
+            HStack(spacing: 8) {
+                
+                Image(systemName: "bolt.fill")
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundColor(.white)
+                
                 Text("NotMAL")
                     .font(.system(size: 24, weight: .heavy, design: .rounded))
+                    .foregroundColor(.white)
+                
                 Spacer()
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
-            .background(Color(red:0.4, green: 0, blue: 0.6))
+            .background(Color(red: 0.4, green: 0, blue: 0.6))
             
             
             //NOTE Text(String) is temporary once you make a view

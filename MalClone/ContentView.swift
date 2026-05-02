@@ -53,9 +53,6 @@ struct ContentView: View {
                 Text("Profile")
                     .tag(Tab.profile)
                     .tabItem{Label("Profile", systemImage: "person.fill")}
-                Text("Settings")
-                    .tag(Tab.settings)
-                    .tabItem{Label("Settings", systemImage: "gearshape.fill")}
                 DemoView()
                     .tag(Tab.demo)
                     .tabItem{Label("demo", systemImage: "gearshape.fill")}

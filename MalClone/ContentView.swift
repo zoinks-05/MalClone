@@ -60,7 +60,7 @@ struct ContentView: View {
                     .tag(Tab.demo)
                     .tabItem{Label("demo", systemImage: "gearshape.fill")}
             }
-            .tabViewStyle(.automatic)
+            .tabViewStyle(.sidebarAdaptable)
         }
     }
 }

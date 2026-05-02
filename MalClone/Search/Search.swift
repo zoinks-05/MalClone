@@ -23,7 +23,7 @@ struct SearchView: View{
     @State private var selectedId: AnimeID? = nil
 
     var body: some View{
-        VStack {
+        VStack (spacing: 0) {
             HStack{
                 HStack{
                     Image(systemName: "magnifyingglass")
@@ -80,16 +80,19 @@ struct SearchView: View{
             }
             .padding(.horizontal, 16)
             .padding(.top, 8)
+            .padding(.bottom, 8)
             
             if isLoading {
                 ProgressView()
-                    .padding(.top, 40)
+                    .frame(maxWidth:.infinity, maxHeight: .infinity)
             } else if !res.isEmpty {
                 CardLogic
+                    .frame(maxWidth:.infinity, maxHeight: .infinity)
+            } else{
+                Spacer()
             }
-            
-            Spacer()
         }
+        .frame(maxWidth:.infinity, maxHeight: .infinity)
     }
     
     var CardLogic: some View{

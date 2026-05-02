@@ -33,9 +33,9 @@ final class LocalStore{
         save()
     }
     
-    func addToWatchList(id: Int, title: String, status: WatchStatus, score: Int?){
+    func addToWatchList(id: Int, title: String, status: WatchStatus, score: Int?, epsWatched: Int){
         guard !user.watchlist.contains(where: {$0.id == id}) else { return }
-        user.watchlist.append(WatchListEntry(id:id,title: title, status: status, score: score))
+        user.watchlist.append(WatchListEntry(id:id,title: title, epsWatched: epsWatched, status: status, score: score))
         save()
     }
     
@@ -44,10 +44,19 @@ final class LocalStore{
         save()
     }
     
-    func updateWatchList(id:Int, status: WatchStatus, score: Int?){
+    func isEntered(id: Int) -> Bool? {
+        user.watchlist.contains {$0.id == id}
+    }
+    
+    func getWatchlist(id: Int) -> WatchListEntry? {
+        user.watchlist.first {$0.id == id}
+    }
+    
+    func updateWatchList(id:Int, status: WatchStatus, score: Int?, epsWatched: Int?){
         guard let i = user.watchlist.firstIndex(where: {$0.id == id}) else { return }
         user.watchlist[i].status = status
         user.watchlist[i].score = score
+        user.watchlist[i].epsWatched = epsWatched!
         save()
     }
     

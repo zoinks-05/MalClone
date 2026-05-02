@@ -131,9 +131,9 @@ struct DemoView: View {
     }
     func demoWatchlist() {
         watchlistLog = []
-        LocalStore.shared.addToWatchList(id: 1, title: "Cowboy Bebop", status: .watching, score: nil)
+        LocalStore.shared.addToWatchList(id: 1, title: "Cowboy Bebop", status: .watching, score: nil, epsWatched: 1)
         watchlistLog.append("✅ added to watchlist")
-        LocalStore.shared.updateWatchList(id: 1, status: .watching, score: 9)
+        LocalStore.shared.updateWatchList(id: 1, status: .watching, score: 9, epsWatched: 0)
         watchlistLog.append("✅ score set to 9")
         let entry = LocalStore.shared.user.watchlist.first { $0.id == 1 }
         watchlistLog.append("📦 entry → id:\(entry?.id ?? 0) title:\(entry?.title ?? "") status:\(entry?.status.rawValue ?? "") score:\(entry?.score ?? 0)")

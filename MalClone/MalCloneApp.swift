@@ -9,6 +9,9 @@ import SwiftUI
 
 @main
 struct MalCloneApp: App {
+    init(){
+        UIView.appearance().tintColor = UIColor(.purple)
+    }
     var body: some Scene {
         WindowGroup {
             ContentView()

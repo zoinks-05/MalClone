@@ -16,6 +16,7 @@ enum WatchStatus: String, Codable, CaseIterable{
 struct WatchListEntry: Codable, Identifiable {
     var id: Int
     var title: String
+    var epsWatched: Int
     var status: WatchStatus
     var score: Int?
 }

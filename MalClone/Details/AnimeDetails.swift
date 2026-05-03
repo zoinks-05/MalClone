@@ -15,14 +15,17 @@ struct AnimeView: View{
     @State private var showMoreInfo = false
     @State private var showAddAlert =  false
     @State private var showRemovalAlert =  false
+    @State private var synopsisExpanded = false
+    @State private var backgroundExpanded = false
     @State private var draftEps = 0
     @State private var draftStatus = WatchStatus.planToWatch
     @State private var draftScore = 0
+    @State private var selectedTab = 0
     let id: Int
     
     var body: some View{
         VStack(spacing: 0) {
-            if isLoading {
+            if anime.isEmpty {
                 ProgressView()
                     .frame(maxHeight: .infinity, alignment: .center)
             } else {
@@ -118,6 +121,56 @@ struct AnimeView: View{
                 )
                 
             }
+            Picker("", selection: $selectedTab){
+                Text("Main").tag(0)
+                Text("Reviews").tag(1)
+            }
+            .pickerStyle(.segmented)
+            .padding(12)
+            
+            if selectedTab == 0 {
+                ScrollView{
+                    MainCard(label: "Synopsis", value: anime["synopsis"] as? String ?? "N/A", condition: $synopsisExpanded)
+                    MainCard(label: "Background", value: anime["background"] as? String ?? "N/A", condition: $backgroundExpanded)
+                    let related = anime["relations"] as? [[String: Any]] ?? []
+                    if !related.isEmpty{
+                        VStack(alignment: .leading){
+                            Text("Related")
+                                .font(.caption)
+                                .foregroundStyle(.white)
+                            
+                            ScrollView(.horizontal, showsIndicators: false){
+                                HStack(spacing:12){
+                                    ForEach(related.indices, id: \.self){ i in
+                                        let rel = related[i]
+                                        let relation = rel["relation"] as? String ?? ""
+                                        let entries = rel["entry"] as? [[String: Any]] ?? []
+                                        
+                                        ForEach(entries.indices, id: \.self){ j in
+                                            let item = entries[j]
+                                            if (item["type"] as? String ?? "") == "anime"{
+                                                NavigationLink {
+                                                    AnimeView(id: item["mal_id"] as? Int ?? 0)
+                                                } label: {
+                                                    relatedCard(item: item, relation: relation)
+                                                }
+                                            } else {
+                                                relatedCard(item: item, relation: relation)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .padding(10)
+                        .background(.white.opacity(0.07))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .cornerRadius(12)
+                    }
+                }
+                .padding(.horizontal, 12)
+                .padding(.top, 10)
+            }
         }
         .frame(maxHeight: .infinity, alignment: .top)
         .task{
@@ -127,7 +180,48 @@ struct AnimeView: View{
         
     }
     
+    func relatedCard(item: [String: Any], relation: String) -> some View{
+        VStack(alignment: .leading) {
+                Text(item["name"] as? String ?? "N/A")
+                    .font(.caption)
+                    .foregroundStyle(.white)
+                    .lineLimit(2)
+                Text(item["type"] as? String ?? "N/A")
+                    .font(.caption2)
+                    .foregroundStyle(.purple)
+                Text(relation)
+                    .font(.caption2)
+                    .foregroundStyle(.purple)
+            }
+            .padding(10)
+            .background(.white.opacity(0.07))
+            .frame(maxWidth:100, minHeight: 50)
+            .cornerRadius(12)
+    }
+    
+    func MainCard(label: String, value: String, condition: Binding<Bool> ) -> some View{
+        VStack(alignment: .leading) {
+            Text(label)
+                .font(.caption)
+                .foregroundColor(.white)
+            Text(value)
+                .font(.subheadline.weight(.semibold))
+                .lineLimit(condition.wrappedValue ? nil : 3)
+            Button{
+                condition.wrappedValue.toggle()
+            } label:{
+                Text(condition.wrappedValue ? "Show Less" : "Show More")
+                    .font(.caption)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(10)
+        .background(.white.opacity(0.07))
+        .cornerRadius(12)
+    }
+    
     func addToWatchListView() -> some View{
+        
         let totalEps = anime["episodes"] as? Int ?? 0
         
         return NavigationStack{

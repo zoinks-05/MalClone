@@ -54,8 +54,12 @@ final class APIService {
         return try await fetch(path)
     }
 
-    func fetchSeasonalAnime() async throws -> [String: Any] {
-        return try await fetch("\(jikanBaseURL)/seasons/now?limit=25")
+    func fetchSeasonalAnime(page: Int = 1) async throws -> [String: Any] {
+        return try await fetch("\(jikanBaseURL)/seasons/now?limit=10&page=\(page)")
+    }
+    
+    func fetchCarasoulAnime() async throws -> [String: Any] {
+        return try await fetch("\(jikanBaseURL)/seasons/now?limit=6")
     }
 
     func fetchGenres() async throws -> [String: Any] {

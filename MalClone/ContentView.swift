@@ -39,7 +39,7 @@ struct ContentView: View {
             // .tag
             // .tabItem
             TabView(selection: $selectedTab){
-                Text("Home")
+                HomeView()
                     .tag(Tab.home)
                     .tabItem{Label("Home", systemImage: "house.fill")}
                 

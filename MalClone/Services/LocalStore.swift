@@ -52,6 +52,10 @@ final class LocalStore{
         user.watchlist.first {$0.id == id}
     }
     
+    func getReviews(id: Int) -> [Review] {
+        user.reviews.filter {$0.animeId == id}
+    }
+    
     func updateWatchList(id:Int, status: WatchStatus, score: Int?, epsWatched: Int?){
         guard let i = user.watchlist.firstIndex(where: {$0.id == id}) else { return }
         user.watchlist[i].status = status

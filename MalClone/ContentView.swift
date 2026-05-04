@@ -43,7 +43,7 @@ struct ContentView: View {
                     .tag(Tab.home)
                     .tabItem{Label("Home", systemImage: "house.fill")}
                 
-                Text("Top")
+                TopView()
                     .tag(Tab.top)
                     .tabItem{Label("Top", systemImage: "chart.bar.fill")}
                 

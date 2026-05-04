@@ -16,6 +16,7 @@ struct HomeView: View{
     @State private var selectedId: Int = 0
     @State private var isReady: Bool = false
     @State private var currentSeasonalPage = 1
+    @State private var timer: Timer? = nil
     
     var body: some View{
         ScrollView{
@@ -30,11 +31,20 @@ struct HomeView: View{
                             let malId = anime["mal_id"] as? Int ?? 0
                             caraCard(anime: anime, malId: malId)
                                 .tag(i)
+                                .padding(10)
                         }
                     }
                     .tabViewStyle(.page(indexDisplayMode: .never))
-                    .frame(height: 250)
-                    .clipShape(RoundedRectangle(cornerRadius: 35))
+                    .frame(height: 275)
+                    .clipped()
+                    .onAppear {
+                        guard timer == nil else {return}
+                        timer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
+                            withAnimation{
+                                currentIndex = (currentIndex + 1) % caraDeets.count
+                            }
+                        }
+                    }
                     
                     VStack(alignment: .leading){
                         
@@ -65,7 +75,8 @@ struct HomeView: View{
                                         }
                                         .onAppear{
                                             if i == seasonalDeets.count - 1 {
-                                                Task { await getSeasonal(page: currentSeasonalPage + 1)}
+                                                currentSeasonalPage += 1
+                                                Task { await getSeasonal(page: currentSeasonalPage)}
                                             }
                                         }
                                     }
@@ -103,6 +114,7 @@ struct HomeView: View{
             }
             if let synopsis = anime["synopsis"] as? String {
                 Text(synopsis)
+                    .foregroundStyle(.white)
                     .font(.caption)
                     .lineLimit(2)
             }
@@ -118,7 +130,7 @@ struct HomeView: View{
                     Color.gray.opacity(0.2)
                 }
             }
-            .clipped()
+            .id(malId)
             .overlay(
                 LinearGradient(colors: [Color.clear, Color.black.opacity(0.9)], startPoint: .top, endPoint: .bottom)
             )
@@ -126,7 +138,6 @@ struct HomeView: View{
                 selectedId = malId
                 showDetails = true
             }
-            .cornerRadius(30)
         )
     }
     
@@ -154,13 +165,7 @@ struct HomeView: View{
         print(banners)
         print("Yes")
     }
-    
-    func imageURL(_ anime: [String: Any]) -> URL? {
-        let images = anime["images"] as? [String: Any]
-        let jpg    = images?["jpg"]  as? [String: Any]
-        return URL(string: jpg?["image_url"] as? String ?? "")
-    }
-    
+        
     func getSeasonal(page: Int = 1) async {
         do {
             let json_seasonal =  try await APIService.shared.fetchSeasonalAnime(page: page)

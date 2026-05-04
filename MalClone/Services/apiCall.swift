@@ -36,6 +36,11 @@ final class APIService {
     func fetchAnimeFull(id: Int) async throws -> [String: Any] {
         return try await fetch("\(jikanBaseURL)/anime/\(id)/full")
     }
+    
+    func getAnimeChars(id: Int) async throws -> [String: Any] {
+        return try await fetch("\(jikanBaseURL)/anime/\(id)/characters")
+    }
+
 
     func searchAnime(query: String, limit: Int = 5, orderBy: String = "popularity", sort: String = "desc") async throws -> [String: Any] {
         let q = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query

@@ -22,7 +22,7 @@ struct ContentView: View {
                     .font(.system(size: 20, weight: .bold))
                     .foregroundColor(.white)
                 
-                Text("NotMAL")
+                Text("AnimeArray")
                     .font(.system(size: 24, weight: .heavy, design: .rounded))
                     .foregroundColor(.white)
                 

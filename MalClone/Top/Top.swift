@@ -7,18 +7,51 @@
 
 import SwiftUI
 
-struct TopView: View{
-    @State private var selectedTab = 0
-    var body: some View{
-        Picker("", selection: $selectedTab){
-            Text("All").tag(0)
-            Text("Anime").tag(1)
-            Text("Movie").tag(2)
-            Text("OVA").tag(3)
+struct TopView: View
+{
+    @State var selectedTab = 0
+    @State var isLoading = false
+    @State var res: [[String: Any]] = []
+    @State var selectedId: AnimeID? = nil
+    
+    var body: some View
+    {
+        VStack(spacing: 0)
+        {
+            Picker("", selection: $selectedTab)
+            {
+                Text("All").tag(0)
+                Text("Anime").tag(1)
+                Text("Movie").tag(2)
+                Text("OVA").tag(3)
+            }
+            .pickerStyle(.segmented)
+            .padding(12)
+            .onChange(of: selectedTab)
+            {
+                Task { await fetchTop() }
+            }
+            
+            if isLoading
+            {
+                ProgressView().frame(maxWidth:.infinity, maxHeight: .infinity)
+                
+            }
+            
+            else if !res.isEmpty
+            {
+                CardLogic.frame(maxWidth:.infinity, maxHeight: .infinity)
+            }
+            
+            else
+            {
+                Spacer()
+            }
         }
-        .pickerStyle(.segmented)
-        .padding(12)
-        
-        // test commit
+        .onAppear
+        {
+            Task { await fetchTop() }
+        }
+        // remember to change to knr
     }
 }

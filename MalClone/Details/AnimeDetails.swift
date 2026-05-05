@@ -18,14 +18,17 @@ struct AnimeView: View{
     @State  var showRemovalAlert =  false
     @State  var synopsisExpanded = false
     @State  var backgroundExpanded = false
+    @State  var showRemoveReview = false
     @State  var draftEps = 0
     @State  var draftStatus = WatchStatus.planToWatch
     @State  var draftScore = 0
     @State  var selectedTab = 0
     @State var showReviewSheet = false
+    @State var showSpoiler = false
     @State var draftReviewTitle = ""
     @State var draftReviewBody = ""
     @State var draftIsSpoiler = false
+    @State var reviews: [Review] = []
     let id: Int
     
     var body: some View{
@@ -60,41 +63,11 @@ struct AnimeView: View{
                     .padding(.horizontal, 12)
                     .padding(.top, 10)
                 } else {
-                    let reviews = LocalStore.shared.getReviews(id: id)
-                    Button {
-                        showReviewSheet = true
-                    } label: {
-                        Text("Create a review")
-                            .frame(maxWidth: 350)
-                            .padding(12)
-                            .background(Color(.secondarySystemBackground))
-                            .cornerRadius(12)
-                    }
-                    .sheet(isPresented: $showReviewSheet){
-                        reviewPublishView()
-                    }
-
-                    
-                    if reviews.isEmpty {
-                        ContentUnavailableView("No Reviews", systemImage: "pencil.slash", description: Text("You have not reviewed this anime yet"))
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    } else {
-                        ScrollView {
-                            ForEach(reviews) { review in
-                                VStack(alignment: .leading){
-                                    HStack {
-                                        Text(review.title)
-                                        Spacer()
-                                        if review.isSpoiler{
-                                            Text("Spoiler")
-                                        }
-                                    }
-                                    Text(review.body)
-                                }
-                                
-                            }
+                    ReviewView()
+                        .onAppear{
+                            reviews = LocalStore.shared.getReviews(id: id)
                         }
-                    }
+
                 }
             }
         }
@@ -104,45 +77,6 @@ struct AnimeView: View{
             hasEntered = LocalStore.shared.isEntered(id: id) ?? false
         }
         
-    }
-    
-    func reviewPublishView() -> some View{
-        NavigationStack{
-           Form{
-               Section("Title"){
-                   TextField("Your Title", text: $draftReviewTitle)
-               }
-               Section("Body"){
-                   TextField("Main content...", text: $draftReviewBody)
-                       .lineLimit(4...10)
-               }
-               Section("Spoiler Mode"){
-                   Toggle("Contains Spoilers", isOn: $draftIsSpoiler)
-                       .tint(.purple)
-               }
-           }
-           .navigationTitle("Write a Review")
-           .navigationBarTitleDisplayMode(.inline)
-           .toolbar{
-               ToolbarItem(placement: .cancellationAction){
-                   Button("Cancel") { showReviewSheet = false}
-               }
-               ToolbarItem(placement: .confirmationAction){
-                   Button("Publish"){
-                       let existingId = LocalStore.shared.getReviews(id:id).first?.id
-                       
-                       if let existingId{
-                           LocalStore.shared.updateReview(id: existingId, title: draftReviewTitle, body: draftReviewBody, isSpoiler: draftIsSpoiler)
-                       } else {
-                           LocalStore.shared.addReview(Id: id, title: draftReviewTitle, body: draftReviewBody, isSpoiler: draftIsSpoiler)
-                       }
-                       showReviewSheet = false
-                   }
-                   .disabled(draftReviewTitle.isEmpty || draftReviewBody.isEmpty)
-               }
-               
-           }
-       }
     }
     
     

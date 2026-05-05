@@ -22,7 +22,11 @@ struct ContentView: View {
                     .font(.system(size: 20, weight: .bold))
                     .foregroundColor(.white)
                 
+<<<<<<< main
                 Text("MyAnimeArray")
+=======
+                Text("AnimeArray")
+>>>>>>> ethan
                     .font(.system(size: 24, weight: .heavy, design: .rounded))
                     .foregroundColor(.white)
                 

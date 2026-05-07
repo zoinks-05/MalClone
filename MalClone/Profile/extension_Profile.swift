@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension ProfileView {
-    func editProfile() -> some View {
+    func editProfile(username: String, bio: String) -> some View {
         NavigationStack {
             VStack {
                 Image(systemName: "person.crop.circle")
@@ -19,20 +19,27 @@ extension ProfileView {
                 
                 List {
                     Section("Enter New Username:") {
-                        TextField("Enter Username", text: $newUsername)
+                        TextField(username, text: $newUsername)
                     }
                     
                     Section("Enter New Bio") {
-                        TextField("Enter Bio", text: $newBio)
+                        TextField(bio, text: $newBio)
                     }
                 }
-                    Button("SAVE"){
+                    Button("Save"){
                         LocalStore.shared.updateProfile(name: newUsername, bio: newBio)
                         showEditProfileSheet = false
                     }
                     .disabled(newUsername.isEmpty && newBio.isEmpty)
                     .padding(10)
                     .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 100))
+                
+                    .onAppear {
+                        if !username.isEmpty || !bio.isEmpty{
+                            newUsername = username
+                            newBio = bio
+                        }
+                    }
             }
         }
     }

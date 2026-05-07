@@ -46,13 +46,24 @@ struct ProfileView: View {
                         }
                     }
                     
-                    NavigationLink {
-                        editProfile()
+                    Button {
+                        showEditProfileSheet = true
                     } label: {
                         Text("Edit Profile")
-                        Image(systemName: "pencil.circle.fill")
-                            .font(.system(size: 20))
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .foregroundStyle(.black)
                     }
+                    .sheet(isPresented: $showEditProfileSheet){
+                        editProfile(username: username, bio: bio)
+                    }
+                    
+//                    NavigationLink {
+//                        editProfile()
+//                    } label: {
+//                        Text("Edit Profile")
+//                        Image(systemName: "pencil.circle.fill")
+//                            .font(.system(size: 20))
+//                    }
                     
                     Section("Your WatchList") {
                         Text("See Your WatchList Placeholder")

@@ -16,11 +16,15 @@ import SwiftUI
 // Use sheets and showreviewsheet = false
 
 struct ProfileView: View {
-    let username = LocalStore.shared.user.name
-    let bio = LocalStore.shared.user.bio
+    @State var username = LocalStore.shared.user.name
+    @State var bio = LocalStore.shared.user.bio
     @State var newUsername = ""
     @State var newBio = ""
     @State var showEditProfileSheet = false
+    @State var selectedTab = 0
+    @State var showReviewSheet = false
+    @State var reviews: [Review] = []
+    let id: Int
 
     var body: some View {
         NavigationStack {
@@ -57,27 +61,29 @@ struct ProfileView: View {
                         editProfile(username: username, bio: bio)
                     }
                     
-//                    NavigationLink {
-//                        editProfile()
-//                    } label: {
-//                        Text("Edit Profile")
-//                        Image(systemName: "pencil.circle.fill")
-//                            .font(.system(size: 20))
-//                    }
-                    
-                    Section("Your WatchList") {
-                        Text("See Your WatchList Placeholder")
-                    }
-                    
-                    Section("Your Reviews") {
-                        Text("See Your Reviews Placeholder")
+                    Section() {
+                        Picker("", selection: $selectedTab){
+                            Text("Your Watchlist").tag(0)
+                            Text("Your Reviews").tag(1)
+                        }
+                        .pickerStyle(.segmented)
+                        .padding(12)
+                        
+                        if selectedTab == 0 {
+                            ScrollView{
+                                Text("Works")
+                            }
+                        }
+                        
+                        else {
+                            ReviewView()
+                                .onAppear{
+                                    reviews = LocalStore.shared.getReviews(id: id)
+                                }
+                        }
                     }
                 }
             }
         }
     }
-}
-
-#Preview {
-    ProfileView()
 }

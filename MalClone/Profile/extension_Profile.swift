@@ -46,13 +46,7 @@ extension ProfileView {
     
     func ReviewView() -> some View{
         let username = LocalStore.shared.user.name
-        let score = LocalStore.shared.getWatchlist(id: id)?.score
-//        return VStack{
-//            .sheet(isPresented: $showReviewSheet){
-//                reviewPublishView()
-//            }
-//            .padding(.bottom, 10)
-//            .disabled(!hasEntered)
+        let watchlist = LocalStore.shared.user.watchlist
         return VStack {
             if reviews.isEmpty {
                 ContentUnavailableView("No Reviews", systemImage: "pencil.slash", description: Text("You have not reviewed any anime yet"))
@@ -60,7 +54,8 @@ extension ProfileView {
             } else {
                 ScrollView {
                     ForEach(reviews) { review in
-                        ReviewCard(review: review, username: username, score: score!)
+                        let score = watchlist.first(where: {$0.id == review.animeId})?.score
+                        ReviewCard(review: review, username: username, score: score ?? 0)
                     }
                 }
             }
@@ -91,7 +86,7 @@ extension ProfileView {
                     Button{
                         if let reviewId = reviews.first?.id{
                             LocalStore.shared.deleteReview(id: reviewId)
-                            reviews = LocalStore.shared.getReviews(id: id)
+                            reviews = LocalStore.shared.user.reviews
                         }
                     } label: {
                         Image(systemName: "multiply.circle")

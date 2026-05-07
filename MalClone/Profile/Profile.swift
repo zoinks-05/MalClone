@@ -24,7 +24,8 @@ struct ProfileView: View {
     @State var selectedTab = 0
     @State var showReviewSheet = false
     @State var reviews: [Review] = []
-    let id: Int
+    @State var watchlist = LocalStore.shared.user.watchlist
+    @State var anime: [String: Any] = [:]
 
     var body: some View {
         NavigationStack {
@@ -78,7 +79,7 @@ struct ProfileView: View {
                         else {
                             ReviewView()
                                 .onAppear{
-                                    reviews = LocalStore.shared.getReviews(id: id)
+                                    reviews = LocalStore.shared.user.reviews
                                 }
                         }
                     }
@@ -86,4 +87,8 @@ struct ProfileView: View {
             }
         }
     }
+}
+
+#Preview {
+    ProfileView()
 }

@@ -23,6 +23,7 @@ struct ProfileView: View {
     @State var showEditProfileSheet = false
     @State var selectedTab = 0
     @State var showReviewSheet = false
+    @State var showRemovalAlert = false
     @State var reviews: [Review] = []
     @State var watchlist = LocalStore.shared.user.watchlist
     @State var anime: [String: Any] = [:]
@@ -71,9 +72,7 @@ struct ProfileView: View {
                         .padding(12)
                         
                         if selectedTab == 0 {
-                            ScrollView{
-                                Text("Works")
-                            }
+                            WatchListView()
                         }
                         
                         else {

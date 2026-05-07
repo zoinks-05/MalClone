@@ -102,4 +102,64 @@ extension ProfileView {
         .background(Color(.secondarySystemBackground))
         .cornerRadius(12)
     }
+    
+    func WatchListView() -> some View{
+        let watchlist = LocalStore.shared.user.watchlist
+        return VStack {
+            if watchlist.isEmpty {
+                ContentUnavailableView("No Anime", systemImage: "pencil.slash", description: Text("You have no anime in your watchlist"))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                ScrollView {
+                    ForEach(watchlist) { anime in
+                        WatchListCard(anime: anime)
+                    }
+                }
+            }
+        }
+    }
+    
+    func WatchListCard(anime: WatchListEntry) -> some View {
+        return VStack(alignment: .leading) {
+            Text(anime.title)
+                .font(.title2.weight(.semibold))
+            HStack{
+                Text(anime.status.rawValue)
+                Spacer()
+                if let score = anime.score {
+                    Text("\(score)/10")
+                }
+            }
+            Divider()
+            HStack {
+                Text("Episodes Watched: \(anime.epsWatched)")
+                Spacer()
+                Button {
+                } label: {
+                    Image(systemName: "pencil.circle")
+                        .font(.system(size: 25))
+                }
+                .padding()
+                
+                Button {
+                    showRemovalAlert = true
+                } label: {
+                    Image(systemName: "multiply.circle")
+                        .font(.system(size: 25))
+                        .foregroundColor(.red)
+                }
+                .alert("Remove from Watchlist?", isPresented: $showRemovalAlert) {
+                    Button("Remove", role: .destructive){
+                        LocalStore.shared.removeFromWatchList(id: anime.id)
+                        showRemovalAlert = false
+                    }
+                    Button("Cancel", role: .cancel) { }
+                } message: {
+                    Text("\(anime.title) will be wiped from your account and will not be saved")
+                }
+            }
+            .padding()
+
+        }
+    }
 }

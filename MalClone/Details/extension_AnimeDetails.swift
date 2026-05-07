@@ -35,7 +35,7 @@ extension AnimeView{
             } else {
                 ScrollView {
                     ForEach(reviews) { review in
-                        ReviewCard(review: review, username: username, score: score!)
+                        ReviewCard(review: review, username: username, score: score ?? 0)
                     }
                 }
             }

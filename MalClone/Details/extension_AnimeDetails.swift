@@ -277,13 +277,18 @@ extension AnimeView{
         return NavigationStack{
             Form{
                 Section("Episodes"){
-                    Text("Watched: \(draftEps) / \(totalEps)")
-                    Slider(
-                        value: Binding(get: {Double(draftEps)}, set: {draftEps = Int($0)}),
-                        in:0...Double(max(0,totalEps)),
-                        step: 1
-                    )
-                    .tint(.purple)
+                    if totalEps > 0 {
+                        Text("Watched: \(draftEps) / \(totalEps)")
+                        Slider(
+                            value: Binding(get: {Double(draftEps)}, set: {draftEps = Int($0)}),
+                            in:0...Double(max(0,totalEps)),
+                            step: 1
+                        )
+                        .tint(.purple)
+                    } else {
+                        Text("Episode Count Unknown")
+                            .foregroundStyle(.secondary)
+                    }
                 }
                 Section("Score"){
                     Text("Score: \(draftScore)")

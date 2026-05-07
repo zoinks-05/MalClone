@@ -18,49 +18,49 @@ import SwiftUI
 struct ProfileView: View {
     let username = LocalStore.shared.user.name
     let bio = LocalStore.shared.user.bio
-//    @State var showReviewSheet = false reference
+    @State var newUsername = ""
+    @State var newBio = ""
+    @State var showEditProfileSheet = false
+
     var body: some View {
-        VStack {
-            Image(systemName: "person.crop.circle")
-                .foregroundStyle(.secondary)
-                .font(.system(size: 75))
-                .padding(10)
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 100))
-            List {
-                Section("Username:") {
-                    HStack {
+        NavigationStack {
+            VStack {
+                Image(systemName: "person.crop.circle")
+                    .foregroundStyle(.secondary)
+                    .font(.system(size: 75))
+                    .padding(10)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 100))
+                List {
+                    Section("Username:") {
                         Text(username)
-                        Spacer()
+                    }
+                    
+                    Section("Bio:") {
+                        if bio.isEmpty {
+                            Text(username + " has not added a bio.")
+                                .foregroundStyle(.secondary)
+                        }
+                            
+                        else {
+                            Text(bio)
+                        }
+                    }
+                    
+                    NavigationLink {
+                        editProfile()
+                    } label: {
+                        Text("Edit Profile")
                         Image(systemName: "pencil.circle.fill")
                             .font(.system(size: 20))
                     }
-                }
-                
-                Section("Bio:") {
-                    HStack {
-                        if bio.isEmpty {
-                            Text("Add Your Bio!")
-                                .foregroundStyle(.secondary)
-                            Spacer()
-                            Image(systemName: "pencil.circle.fill")
-                                .font(.system(size: 20))
-                        }
-                        
-                        else {
-                            Text(bio)
-                            Spacer()
-                            Image(systemName: "pencil.circle.fill")
-                                .font(.system(size: 20))
-                        }
+                    
+                    Section("Your WatchList") {
+                        Text("See Your WatchList Placeholder")
                     }
-                }
-                
-                Section("Your WatchList") {
-                    Text("See Your WatchList Placeholder")
-                }
-                
-                Section("Your Reviews") {
-                    Text("See Your Reviews Placeholder")
+                    
+                    Section("Your Reviews") {
+                        Text("See Your Reviews Placeholder")
+                    }
                 }
             }
         }

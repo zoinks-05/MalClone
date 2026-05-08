@@ -8,6 +8,7 @@ import Foundation
 
 extension TopView
 {
+    // fetch first page of top anime
     func fetchTop() async {
         isLoading = true
         currentPage = 1
@@ -20,6 +21,7 @@ extension TopView
                 default: " "
             }
             
+            // fetch from API
             let json = try await APIService.shared.fetchTopAnime(
                 type: type,
                 filter: "bypopularity",
@@ -37,7 +39,9 @@ extension TopView
         isLoading = false
     }
     
+    // fetch next page when at end of page
     func nextPage() async {
+        // stop if no new pages
         guard !isFetchingMore, pageData["has_next_page"] as? Bool == true else { return }
         isFetchingMore = true
         currentPage += 1
@@ -52,6 +56,7 @@ extension TopView
                 default: type = ""
             }
             
+            // fetch next page
             let json = try await APIService.shared.fetchTopAnime(
                 type: type,
                 filter: "bypopularity",

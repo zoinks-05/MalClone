@@ -27,6 +27,7 @@ struct TopView: View
             }
             .pickerStyle(.segmented)
             .padding(12)
+            // reload page
             .onChange(of: selectedTab) {
                 Task { await fetchTop() }
             }
@@ -36,6 +37,7 @@ struct TopView: View
                 
             }
             
+            // shows anime cards
             else if !res.isEmpty {
                 CardLogic.frame(maxWidth:.infinity, maxHeight: .infinity)
             }

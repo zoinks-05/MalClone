@@ -22,6 +22,7 @@ extension TopView
                         let anime = res[i]
                         
                         VStack(spacing: 0) {
+                            // cover
                             AsyncImage(url: imageURL(anime)) { phase in
                                 switch phase {
                                     case .success(let img):
@@ -37,10 +38,13 @@ extension TopView
                             let isAiring = anime["airing"] as? Bool ?? false
                             
                             VStack(alignment: .leading, spacing: 4) {
+                                // info
                                 HStack {
+                                    // status
                                     Image(systemName: isAiring ? "dot.radiowaves.left.and.right" : "pause.circle")
                                         .foregroundStyle(isAiring ? .purple : .secondary)
                                     
+                                    // title
                                     Text(anime["title"] as? String ?? "Unknown")
                                         .font(.headline)
                                 }
@@ -48,6 +52,7 @@ extension TopView
                                 .padding(.top)
                                 .padding(.bottom, 2)
                                 
+                                // tags
                                 HStack(spacing: 6) {
                                     tags(anime)
                                 }
@@ -64,6 +69,7 @@ extension TopView
                         }
                         .padding(6)
                         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+                        // load next page
                         .onAppear {
                             if i ==  res.count - 1 {
                                 Task { await nextPage() }

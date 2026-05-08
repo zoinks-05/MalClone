@@ -13,6 +13,9 @@ struct TopView: View
     @State var isLoading = false
     @State var res: [[String: Any]] = []
     @State var selectedId: AnimeID? = nil
+    @State var pageData: [String: Any] = [:]
+    @State var currentPage = 1
+    @State var isFetchingMore = false
     
     var body: some View
     {
@@ -53,5 +56,6 @@ struct TopView: View
             Task { await fetchTop() }
         }
         // remember to change to knr
+        // ok me in the past
     }
 }

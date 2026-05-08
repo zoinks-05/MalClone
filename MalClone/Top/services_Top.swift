@@ -11,6 +11,7 @@ extension TopView
     func fetchTop() async
     {
         isLoading = true
+        currentPage = 1
         
         do
         {
@@ -19,7 +20,7 @@ extension TopView
                 case 1: "tv"
                 case 2: "movie"
                 case 3: "ova"
-                default: ""
+                default: " "
             }
             
             let json = try await APIService.shared.fetchTopAnime(
@@ -29,6 +30,7 @@ extension TopView
             )
             
             res = json["data"] as? [[String: Any]] ?? []
+            pageData = json["pagination"] as? [String: Any] ?? [:]
             
         }
         
@@ -37,5 +39,42 @@ extension TopView
             print(error.localizedDescription)
         }
         isLoading = false
+    }
+    
+    func nextPage() async {
+        guard !isFetchingMore, pageData["has_next_page"] as? Bool == true else { return }
+        isFetchingMore = true
+        currentPage += 1
+        
+        do
+        {
+            let type: String
+            
+            switch selectedTab
+            {
+                case 1: type = "tv"
+                case 2: type = "movie"
+                case 3: type = "ova"
+                default: type = ""
+            }
+            
+            let json = try await APIService.shared.fetchTopAnime(
+                type: type,
+                filter: "bypopularity",
+                page: currentPage
+            )
+            
+            let newItems = json["data"] as? [[String: Any]] ?? []
+            pageData = json["pagination"] as? [String: Any] ?? [:]
+            res.append(contentsOf: newItems)
+        }
+        
+
+        
+        catch
+        {
+            print(error.localizedDescription)
+        }
+        isFetchingMore = false
     }
 }

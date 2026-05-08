@@ -8,15 +8,12 @@ import Foundation
 
 extension TopView
 {
-    func fetchTop() async
-    {
+    func fetchTop() async {
         isLoading = true
         currentPage = 1
         
-        do
-        {
-            let type = switch selectedTab
-            {
+        do {
+            let type = switch selectedTab {
                 case 1: "tv"
                 case 2: "movie"
                 case 3: "ova"
@@ -34,8 +31,7 @@ extension TopView
             
         }
         
-        catch
-        {
+        catch {
             print(error.localizedDescription)
         }
         isLoading = false
@@ -46,12 +42,10 @@ extension TopView
         isFetchingMore = true
         currentPage += 1
         
-        do
-        {
+        do {
             let type: String
             
-            switch selectedTab
-            {
+            switch selectedTab {
                 case 1: type = "tv"
                 case 2: type = "movie"
                 case 3: type = "ova"
@@ -68,11 +62,9 @@ extension TopView
             pageData = json["pagination"] as? [String: Any] ?? [:]
             res.append(contentsOf: newItems)
         }
+    
         
-
-        
-        catch
-        {
+        catch {
             print(error.localizedDescription)
         }
         isFetchingMore = false

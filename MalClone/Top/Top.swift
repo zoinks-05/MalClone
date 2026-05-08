@@ -17,12 +17,9 @@ struct TopView: View
     @State var currentPage = 1
     @State var isFetchingMore = false
     
-    var body: some View
-    {
-        VStack(spacing: 0)
-        {
-            Picker("", selection: $selectedTab)
-            {
+    var body: some View {
+        VStack(spacing: 0) {
+            Picker("", selection: $selectedTab) {
                 Text("All").tag(0)
                 Text("Anime").tag(1)
                 Text("Movie").tag(2)
@@ -30,32 +27,25 @@ struct TopView: View
             }
             .pickerStyle(.segmented)
             .padding(12)
-            .onChange(of: selectedTab)
-            {
+            .onChange(of: selectedTab) {
                 Task { await fetchTop() }
             }
             
-            if isLoading
-            {
+            if isLoading {
                 ProgressView().frame(maxWidth:.infinity, maxHeight: .infinity)
                 
             }
             
-            else if !res.isEmpty
-            {
+            else if !res.isEmpty {
                 CardLogic.frame(maxWidth:.infinity, maxHeight: .infinity)
             }
             
-            else
-            {
+            else {
                 Spacer()
             }
         }
-        .onAppear
-        {
+        .onAppear {
             Task { await fetchTop() }
         }
-        // remember to change to knr
-        // ok me in the past
     }
 }

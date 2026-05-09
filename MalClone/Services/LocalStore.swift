@@ -41,6 +41,7 @@ final class LocalStore{
     
     func removeFromWatchList(id: Int){
         user.watchlist.removeAll {$0.id == id}
+        user.reviews.removeAll {$0.animeId == id}
         save()
     }
     

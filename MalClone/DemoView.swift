@@ -77,7 +77,6 @@ struct DemoView: View {
                 // ── Local store ───────────────────────────────────
                 Section("3. Watchlist") {
                     Button("Add Cowboy Bebop → Watching, score 9") {
-                        demoWatchlist()
                     }
                     if !watchlistLog.isEmpty { logBlock(watchlistLog) }
                 }

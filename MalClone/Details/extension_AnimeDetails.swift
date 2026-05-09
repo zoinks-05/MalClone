@@ -8,6 +8,134 @@
 import SwiftUI
 
 extension AnimeView{
+    
+    func ReviewView() -> some View{
+        let username = LocalStore.shared.user.name
+        let score = LocalStore.shared.getWatchlist(id: id)?.score
+        return VStack{
+            Button {
+                showReviewSheet = true
+            } label: {
+                Text("Create a review")
+                    .frame(maxWidth: 350)
+                    .padding(12)
+                    .background(Color(.secondarySystemBackground))
+                    .cornerRadius(12)
+            }
+            .sheet(isPresented: $showReviewSheet){
+                reviewPublishView()
+            }
+            .padding(.bottom, 10)
+            .disabled(!hasEntered)
+            
+            
+            if reviews.isEmpty {
+                ContentUnavailableView("No Reviews", systemImage: "pencil.slash", description: Text("You have not reviewed this anime yet"))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                ScrollView {
+                    ForEach(reviews) { review in
+                        ReviewCard(review: review, username: username, score: score ?? 0)
+                    }
+                }
+            }
+        }
+    }
+
+    func ReviewCard(review: Review, username: String, score: Int) -> some View{
+        VStack(alignment: .leading){
+            Text(review.title)
+                .font(.title2.weight(.semibold))
+            HStack{
+                Text(username)
+                Spacer()
+                Text("\(score)/10")
+                if review.isSpoiler{
+                    Button{
+                        showSpoiler.toggle()
+                    } label: {
+                        Image(systemName: !showSpoiler ? "eye.slash": "eye")
+                            .foregroundColor(.red)
+                    }
+                }
+            }
+            Divider()
+            HStack{
+                Text(review.body)
+                    .blur(radius: review.isSpoiler && !showSpoiler ? 8 : 0)
+                    .animation(.easeInOut, value: showSpoiler)
+                if hasEntered{
+                    Spacer()
+                    VStack{
+                        Button{
+                          showReviewSheet = true
+                        } label: {
+                            Image(systemName: "pencil.circle")
+                                .font(.system(size: 25))
+                        }
+                        .padding()
+                        Button{
+                            if let reviewId = reviews.first?.id{
+                                LocalStore.shared.deleteReview(id: reviewId)
+                                reviews = LocalStore.shared.getReviews(id: id)
+                            }
+                        } label: {
+                            Image(systemName: "multiply.circle")
+                                .font(.system(size: 25))
+                                .foregroundColor(.red)
+                        }
+                        .padding()
+
+                    }
+                }
+            }
+        }
+        .frame(maxWidth:350, maxHeight: .infinity)
+        .padding(12)
+        .background(Color(.secondarySystemBackground))
+        .cornerRadius(12)
+    }
+    
+    func reviewPublishView() -> some View{
+        NavigationStack{
+           Form{
+               Section("Title"){
+                   TextField("Your Title", text: $draftReviewTitle)
+               }
+               Section("Body"){
+                   TextField("Main content...", text: $draftReviewBody, axis: .vertical)
+                       .lineLimit(4...10)
+               }
+               Section("Spoiler Mode"){
+                   Toggle("Contains Spoilers", isOn: $draftIsSpoiler)
+                       .tint(.purple)
+               }
+           }
+           .navigationTitle("Write a Review")
+           .navigationBarTitleDisplayMode(.inline)
+           .toolbar{
+               ToolbarItem(placement: .cancellationAction){
+                   Button("Cancel") { showReviewSheet = false}
+               }
+               ToolbarItem(placement: .confirmationAction){
+                   Button("Publish"){
+                       let existingId = LocalStore.shared.getReviews(id:id).first?.id
+                       
+                       if let existingId{
+                           LocalStore.shared.updateReview(id: existingId, title: draftReviewTitle, body: draftReviewBody, isSpoiler: draftIsSpoiler)
+                       } else {
+                           LocalStore.shared.addReview(Id: id, title: draftReviewTitle, body: draftReviewBody, isSpoiler: draftIsSpoiler)
+                       }
+                       reviews = LocalStore.shared.getReviews(id: id)
+                       showReviewSheet = false
+                   }
+                   .disabled(draftReviewTitle.isEmpty || draftReviewBody.isEmpty)
+               }
+               
+           }
+       }
+    }
+    
     func header() -> some View{
         HStack(alignment: .bottom){
             AsyncImage(url: imageURL(anime)){ s in
@@ -149,13 +277,18 @@ extension AnimeView{
         return NavigationStack{
             Form{
                 Section("Episodes"){
-                    Text("Watched: \(draftEps) / \(totalEps)")
-                    Slider(
-                        value: Binding(get: {Double(draftEps)}, set: {draftEps = Int($0)}),
-                        in:0...Double(max(0,totalEps)),
-                        step: 1
-                    )
-                    .tint(.purple)
+                    if totalEps > 0 {
+                        Text("Watched: \(draftEps) / \(totalEps)")
+                        Slider(
+                            value: Binding(get: {Double(draftEps)}, set: {draftEps = Int($0)}),
+                            in:0...Double(max(0,totalEps)),
+                            step: 1
+                        )
+                        .tint(.purple)
+                    } else {
+                        Text("Episode Count Unknown")
+                            .foregroundStyle(.secondary)
+                    }
                 }
                 Section("Score"){
                     Text("Score: \(draftScore)")

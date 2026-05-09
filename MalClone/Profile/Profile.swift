@@ -7,14 +7,6 @@
 
 import SwiftUI
 
-// Fake Profile Image
-// User Model
-// Bio
-// Picker to swap besides watchlist and reviews
-// Watchlist should be able to remove/edit using the addWatchList view as reference and structure in extension_animedetails
-// Review should be able to edit reviews using the reviewPublishView() as reference and structure in AnimeDetails
-// Use sheets and showreviewsheet = false
-
 struct ProfileView: View {
     @State var username = LocalStore.shared.user.name
     @State var bio = LocalStore.shared.user.bio
@@ -24,6 +16,12 @@ struct ProfileView: View {
     @State var selectedTab = 0
     @State var showReviewSheet = false
     @State var showRemovalAlert = false
+    @State var reviewTitle = ""
+    @State var reviewBody = ""
+    @State var isSpoiler = false
+    @State var newReviewTitle = ""
+    @State var newReviewBody = ""
+    @State var newIsSpoiler = false
     @State var reviews: [Review] = []
     @State var watchlist = LocalStore.shared.user.watchlist
     @State var anime: [String: Any] = [:]
@@ -60,7 +58,7 @@ struct ProfileView: View {
                             .foregroundStyle(.black)
                     }
                     .sheet(isPresented: $showEditProfileSheet){
-                        editProfile(username: username, bio: bio)
+                        editProfileView(username: username, bio: bio)
                     }
                     
                     Section() {

@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension ProfileView {
-    func editProfile(username: String, bio: String) -> some View {
+    func editProfileView(username: String, bio: String) -> some View {
         NavigationStack {
             VStack {
                 Image(systemName: "person.crop.circle")
@@ -19,14 +19,14 @@ extension ProfileView {
                 
                 List {
                     Section("Enter New Username:") {
-                        TextField(username, text: $newUsername)
+                        TextField("Enter Username", text: $newUsername)
                     }
                     
                     Section("Enter New Bio") {
-                        TextField(bio, text: $newBio)
+                        TextField("Enter Bio", text: $newBio)
                     }
                 }
-                    Button("Save"){
+                    Button("Save") {
                         LocalStore.shared.updateProfile(name: newUsername, bio: newBio)
                         showEditProfileSheet = false
                     }
@@ -35,10 +35,8 @@ extension ProfileView {
                     .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 100))
                 
                     .onAppear {
-                        if !username.isEmpty || !bio.isEmpty{
-                            newUsername = username
-                            newBio = bio
-                        }
+                        newUsername = username
+                        newBio = bio
                     }
             }
         }
@@ -82,12 +80,13 @@ extension ProfileView {
                         Image(systemName: "pencil.circle")
                             .font(.system(size: 25))
                     }
+                    .sheet(isPresented: $showReviewSheet){
+                        editReviewView(review: review, reviewTitle: review.title, reviewBody: review.body)
+                    }
                     .padding()
                     Button{
-                        if let reviewId = reviews.first?.id{
-                            LocalStore.shared.deleteReview(id: reviewId)
-                            reviews = LocalStore.shared.user.reviews
-                        }
+                        LocalStore.shared.deleteReview(id: review.id)
+                        reviews = LocalStore.shared.user.reviews
                     } label: {
                         Image(systemName: "multiply.circle")
                             .font(.system(size: 25))
@@ -101,6 +100,45 @@ extension ProfileView {
         .padding(12)
         .background(Color(.secondarySystemBackground))
         .cornerRadius(12)
+    }
+    
+    func editReviewView(review: Review ,reviewTitle: String, reviewBody: String) -> some View{
+        NavigationStack{
+           Form{
+               Section("Title"){
+                   TextField(reviewTitle, text: $newReviewTitle)
+               }
+               Section("Body"){
+                   TextField(reviewBody, text: $newReviewBody, axis: .vertical)
+                       .lineLimit(4...10)
+               }
+               Section("Spoiler Mode"){
+                   Toggle("Contains Spoilers", isOn: $isSpoiler)
+                       .tint(.purple)
+               }
+           }
+           .navigationTitle("Edit Your Review")
+           .navigationBarTitleDisplayMode(.inline)
+           .toolbar{
+               ToolbarItem(placement: .cancellationAction){
+                   Button("Cancel") { showReviewSheet = false}
+               }
+               ToolbarItem(placement: .confirmationAction){
+                   Button("Save"){
+                       LocalStore.shared.updateReview(id: review.id, title: newReviewTitle, body: newReviewBody, isSpoiler: newIsSpoiler)
+                       showReviewSheet = false
+                   }
+                   .disabled(reviewTitle.isEmpty || reviewBody.isEmpty)
+               }
+               
+           }
+           .onAppear {
+               if !reviewTitle.isEmpty || !reviewBody.isEmpty{
+                   newReviewTitle = reviewTitle
+                   newReviewBody = reviewBody
+               }
+           }
+       }
     }
     
     func WatchListView() -> some View{
@@ -159,7 +197,6 @@ extension ProfileView {
                 }
             }
             .padding()
-
         }
     }
 }

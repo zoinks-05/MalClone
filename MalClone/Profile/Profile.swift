@@ -25,6 +25,7 @@ struct ProfileView: View {
     @State var reviews: [Review] = []
     @State var watchlist = LocalStore.shared.user.watchlist
     @State var anime: [String: Any] = [:]
+    @State var selectedAnime: Bool = false
 
     var body: some View {
         NavigationStack {

@@ -29,13 +29,14 @@ struct HomeView: View{
                                                    (24, "Sci-Fi")]
     @State private var genreDeets: [[[String: Any]]] = Array(repeating: [], count: 9)
     @State private var currentGenrePage = Array(repeating: 1, count: 9)
+    @State private var isFullyReady: Bool =  false
     
     @State private var timer: Timer? = nil
     
     var body: some View{
         ScrollView{
             VStack{
-                if !isReady {
+                if !isReady && !isFullyReady{
                     ProgressView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
@@ -193,7 +194,9 @@ struct HomeView: View{
                 }
             }
             .task {
+                guard !isFullyReady else {return}
                 await loadInit()
+                isFullyReady = true
             }
         }
     }

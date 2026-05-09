@@ -50,7 +50,7 @@ struct ContentView: View {
                 SearchView()
                     .tag(Tab.search)
                     .tabItem{Label("Search", systemImage: "magnifyingglass")}
-                Text("Profile")
+                ProfileView()
                     .tag(Tab.profile)
                     .tabItem{Label("Profile", systemImage: "person.fill")}
                 DemoView()

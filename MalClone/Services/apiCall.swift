@@ -53,7 +53,7 @@ final class APIService {
         return try await fetch("\(jikanBaseURL)/anime?q=\(q)&limit=25&page=\(page)&order_by=\(orderBy.rawValue)&sort=\(sort)")
     }
 
-    func fetchTopAnime(type: String = "", filter: String = "bypopularity", page: Int = 1) async throws -> [String: Any] {
+    func fetchTopAnime(type: String = "", filter: String = "", page: Int = 1) async throws -> [String: Any] {
         var path = "\(jikanBaseURL)/top/anime?limit=25&filter=\(filter)&page=\(page)"
         if !type.isEmpty { path += "&type=\(type)" }
         return try await fetch(path)

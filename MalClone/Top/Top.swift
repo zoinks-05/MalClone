@@ -23,7 +23,7 @@ struct TopView: View
                 Text("All").tag(0)
                 Text("Anime").tag(1)
                 Text("Movie").tag(2)
-                Text("OVA").tag(3)
+                Text("Specials").tag(3)
             }
             .pickerStyle(.segmented)
             .padding(12)

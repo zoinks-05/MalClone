@@ -17,14 +17,13 @@ extension TopView
             let type = switch selectedTab {
                 case 1: "tv"
                 case 2: "movie"
-                case 3: "ova"
-                default: " "
+                case 3: "ona"
+                default: ""
             }
             
             // fetch from API
             let json = try await APIService.shared.fetchTopAnime(
                 type: type,
-                filter: "bypopularity",
                 page: 1
             )
             
@@ -52,7 +51,7 @@ extension TopView
             switch selectedTab {
                 case 1: type = "tv"
                 case 2: type = "movie"
-                case 3: type = "ova"
+                case 3: type = "ona"
                 default: type = ""
             }
             

@@ -22,13 +22,25 @@ struct ProfileView: View {
     @State var newReviewTitle = ""
     @State var newReviewBody = ""
     @State var newIsSpoiler = false
+    @State var watchedEps = 0
+    @State var watchStatus = WatchStatus.planToWatch
+    @State var animeScore = 0
+    @State var newWatchedEps = 0
+    @State var newAnimeScore = 0
+    @State var newWatchStatus = WatchStatus.planToWatch
+    @State var hasEntered = false
+    @State var showAddAlert = false
     @State var reviews: [Review] = []
     @State var watchlist = LocalStore.shared.user.watchlist
     @State var anime: [String: Any] = [:]
     @State var selectedAnime: WatchListEntry?
+    @State var editAnime: WatchListEntry?
     @State var deleteThisAnime: WatchListEntry?
     @State var selectedReview: Review?
     @State var deleteThisReview: Review?
+    @State var id = 0
+    @State var isLoadingEpisode = false
+    @State var totalEpisodes = 0
 
     var body: some View {
         NavigationStack {

@@ -45,8 +45,6 @@ extension ProfileView {
     }
     
     func ReviewView() -> some View{
-        let username = LocalStore.shared.user.name
-        let watchlist = LocalStore.shared.user.watchlist
         return VStack {
             if reviews.isEmpty {
                 ContentUnavailableView("No Reviews", systemImage: "pencil.slash", description: Text("You have not reviewed any anime yet"))
@@ -131,6 +129,7 @@ extension ProfileView {
                ToolbarItem(placement: .confirmationAction){
                    Button("Save"){
                        LocalStore.shared.updateReview(id: review.id, title: newReviewTitle, body: newReviewBody, isSpoiler: newIsSpoiler)
+                       reviews = LocalStore.shared.user.reviews
                        selectedReview = nil
                    }
                    .disabled(newReviewTitle.isEmpty || newReviewBody.isEmpty)
@@ -138,16 +137,13 @@ extension ProfileView {
                
            }
            .onAppear {
-               if !reviewTitle.isEmpty || !reviewBody.isEmpty{
                    newReviewTitle = reviewTitle
                    newReviewBody = reviewBody
-               }
            }
        }
     }
     
     func WatchListView() -> some View{
-        let watchlist = LocalStore.shared.user.watchlist
         return VStack {
             if watchlist.isEmpty {
                 ContentUnavailableView("No Anime", systemImage: "pencil.slash", description: Text("You have no anime in your watchlist"))
@@ -178,9 +174,13 @@ extension ProfileView {
                 Text("Episodes Watched: \(anime.epsWatched)")
                 Spacer()
                 Button {
+                    editAnime = anime
                 } label: {
                     Image(systemName: "pencil.circle")
                         .font(.system(size: 25))
+                }
+                .sheet(item: $editAnime) { anime in
+                    editWatchListView(animeToEdit: anime)
                 }
                 .padding()
                 
@@ -216,6 +216,67 @@ extension ProfileView {
         }
         .sheet(item: $selectedAnime) { anime in
             AnimeView(id: anime.id)
+        }
+    }
+    
+    func editWatchListView(animeToEdit: WatchListEntry) -> some View {
+        return NavigationStack {
+            Form {
+                Section("Episodes"){
+                    if totalEpisodes > 0 {
+                        Text("Watched: \(newWatchedEps) / \(totalEpisodes)")
+                        Slider(
+                            value: Binding(get: {Double(newWatchedEps)}, set: {newWatchedEps = Int($0)}),
+                            in:0...Double(max(0,totalEpisodes)),
+                            step: 1
+                        )
+                        .tint(.purple)
+                    } else {
+                        Text("Episode Count Unknown")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                Section("Score"){
+                    Text("Score: \(newAnimeScore)")
+                    Slider(
+                        value: Binding(get: {Double(newAnimeScore)}, set: {newAnimeScore = Int($0)}),
+                        in:0...10,
+                        step: 1
+                    )
+                    .tint(.purple)
+                }
+                Section("Status"){
+                    Picker("Status", selection: $newWatchStatus){
+                        ForEach(WatchStatus.allCases, id: \.self){
+                            Text($0.rawValue)
+                        }
+                    }
+                }
+                .pickerStyle(.segmented)
+            }
+            .navigationTitle("Edit entry")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar{
+                ToolbarItem(placement: .cancellationAction){
+                    Button("Cancel") {
+                        editAnime = nil
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction){
+                    Button("Update") {
+                        LocalStore.shared.updateWatchList(id: animeToEdit.id, status: newWatchStatus, score: newAnimeScore, epsWatched: newWatchedEps)
+                        watchlist = LocalStore.shared.user.watchlist
+                        editAnime = nil
+                    }
+                }
+                
+            }
+            .task {
+                newWatchedEps = animeToEdit.epsWatched
+                newAnimeScore = animeToEdit.score ?? 0
+                newWatchStatus = animeToEdit.status
+                await fetchTotalEpisodes(id: animeToEdit.id)
+            }
         }
     }
 }

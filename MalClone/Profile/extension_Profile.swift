@@ -28,6 +28,8 @@ extension ProfileView {
                 }
                     Button("Save") {
                         LocalStore.shared.updateProfile(name: newUsername, bio: newBio)
+                        self.username = newUsername
+                        self.bio = newBio
                         showEditProfileSheet = false
                     }
                     .disabled(newUsername.isEmpty && newBio.isEmpty)
@@ -197,6 +199,12 @@ extension ProfileView {
                 }
             }
             .padding()
+        }
+        .onTapGesture {
+            selectedAnime = true
+        }
+        .sheet(isPresented: $selectedAnime){
+            AnimeView(id: anime.id)
         }
     }
 }

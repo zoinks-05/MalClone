@@ -78,11 +78,12 @@ extension ProfileView {
                 VStack{
                     Button{
                         showReviewSheet = true
+                        selectedReview = review
                     } label: {
                         Image(systemName: "pencil.circle")
                             .font(.system(size: 25))
                     }
-                    .sheet(isPresented: $showReviewSheet){
+                    .sheet(item: $selectedReview) { review in
                         editReviewView(review: review, reviewTitle: review.title, reviewBody: review.body)
                     }
                     .padding()
@@ -115,7 +116,7 @@ extension ProfileView {
                        .lineLimit(4...10)
                }
                Section("Spoiler Mode"){
-                   Toggle("Contains Spoilers", isOn: $isSpoiler)
+                   Toggle("Contains Spoilers", isOn: $newIsSpoiler)
                        .tint(.purple)
                }
            }
@@ -123,14 +124,16 @@ extension ProfileView {
            .navigationBarTitleDisplayMode(.inline)
            .toolbar{
                ToolbarItem(placement: .cancellationAction){
-                   Button("Cancel") { showReviewSheet = false}
+                   Button("Cancel") {
+                       selectedReview = nil
+                   }
                }
                ToolbarItem(placement: .confirmationAction){
                    Button("Save"){
                        LocalStore.shared.updateReview(id: review.id, title: newReviewTitle, body: newReviewBody, isSpoiler: newIsSpoiler)
-                       showReviewSheet = false
+                       selectedReview = nil
                    }
-                   .disabled(reviewTitle.isEmpty || reviewBody.isEmpty)
+                   .disabled(newReviewTitle.isEmpty || newReviewBody.isEmpty)
                }
                
            }
@@ -183,27 +186,35 @@ extension ProfileView {
                 
                 Button {
                     showRemovalAlert = true
+                    deleteThisAnime = anime
                 } label: {
                     Image(systemName: "multiply.circle")
                         .font(.system(size: 25))
                         .foregroundColor(.red)
                 }
                 .alert("Remove from Watchlist?", isPresented: $showRemovalAlert) {
-                    Button("Remove", role: .destructive){
-                        LocalStore.shared.removeFromWatchList(id: anime.id)
-                        showRemovalAlert = false
+                    Button("Remove", role: .destructive) {
+                        if let anime = deleteThisAnime {
+                            LocalStore.shared.removeFromWatchList(id: anime.id)
+                            showRemovalAlert = false
+                        }
+                        deleteThisAnime = nil
                     }
-                    Button("Cancel", role: .cancel) { }
+                    Button("Cancel", role: .cancel) {
+                        deleteThisAnime = nil
+                    }
                 } message: {
-                    Text("\(anime.title) will be wiped from your account and will not be saved")
+                    if let anime = deleteThisAnime {
+                        Text("\(anime.title) will be wiped from your account and will not be saved")
+                    }
                 }
             }
             .padding()
         }
         .onTapGesture {
-            selectedAnime = true
+            selectedAnime = anime
         }
-        .sheet(isPresented: $selectedAnime){
+        .sheet(item: $selectedAnime) { anime in
             AnimeView(id: anime.id)
         }
     }

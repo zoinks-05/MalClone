@@ -58,7 +58,6 @@ extension TopView
             // fetch next page
             let json = try await APIService.shared.fetchTopAnime(
                 type: type,
-                filter: "bypopularity",
                 page: currentPage
             )
             

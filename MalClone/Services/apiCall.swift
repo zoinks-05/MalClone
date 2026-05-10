@@ -49,7 +49,6 @@ final class APIService {
 
     func searchAnimePaged(query: String, page: Int = 1, orderBy: OrderBy = OrderBy.popularity, sort: String = "desc") async throws -> [String: Any] {
         let q = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
-        // fetch("\(jikanBaseURL)/anime?q=\(q)&limit=25&page=\(page)&order_by=\(orderBy)&sort=\(sort)")
         return try await fetch("\(jikanBaseURL)/anime?q=\(q)&limit=25&page=\(page)&order_by=\(orderBy.rawValue)&sort=\(sort)")
     }
 
@@ -61,6 +60,10 @@ final class APIService {
 
     func fetchSeasonalAnime(page: Int = 1) async throws -> [String: Any] {
         return try await fetch("\(jikanBaseURL)/seasons/now?limit=10&page=\(page)")
+    }
+    
+    func fetchUpcomingAnime(page: Int = 1) async throws -> [String: Any] {
+        return try await fetch("\(jikanBaseURL)/seasons/upcoming?limit=10&page=\(page)")
     }
     
     func fetchCarasoulAnime() async throws -> [String: Any] {

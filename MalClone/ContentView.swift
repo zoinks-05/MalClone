@@ -53,9 +53,6 @@ struct ContentView: View {
                 ProfileView()
                     .tag(Tab.profile)
                     .tabItem{Label("Profile", systemImage: "person.fill")}
-                DemoView()
-                    .tag(Tab.demo)
-                    .tabItem{Label("demo", systemImage: "gearshape.fill")}
             }
             .tabViewStyle(.sidebarAdaptable)
         }

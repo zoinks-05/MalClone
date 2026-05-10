@@ -16,6 +16,8 @@ struct MalCloneApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(LocalStore.shared)
         }
     }
 }
+

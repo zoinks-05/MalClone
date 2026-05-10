@@ -56,6 +56,7 @@ struct HomeView: View{
                     .onAppear {
                         guard timer == nil else {return}
                         timer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
+                            guard !caraDeets.isEmpty else {return}
                             withAnimation{
                                 currentIndex = (currentIndex + 1) % caraDeets.count
                             }
@@ -79,20 +80,19 @@ struct HomeView: View{
 
             }
             .padding()
-            .sheet(isPresented: $showDetails){
-                NavigationStack{
-                    AnimeView(id: selectedId)
-                }
-            }
             .task {
                 guard !isFullyReady else {return}
                 await loadInit()
                 
                 if Task.isCancelled { return }
-                
                 isFullyReady = true
             }
         }
+        .sheet(isPresented: $showDetails){
+                NavigationStack{
+                    AnimeView(id: selectedId)
+                }
+            }
     }
-    
 }
+

@@ -199,6 +199,7 @@ extension ProfileView {
                             showRemovalAlert = false
                         }
                         deleteThisAnime = nil
+                        watchlist = LocalStore.shared.user.watchlist
                     }
                     Button("Cancel", role: .cancel) {
                         deleteThisAnime = nil

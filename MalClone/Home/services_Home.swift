@@ -30,7 +30,8 @@ extension HomeView {
             if Task.isCancelled { return }
 
             // load genre fetch
-            for g in 0..<genres.count {
+            let randomIndices = Array(genres.indices).shuffled().prefix(3)
+            for g in randomIndices {
                 if Task.isCancelled { return }
                 await getGenre(genreIndex: g)
             }

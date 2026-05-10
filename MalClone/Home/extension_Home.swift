@@ -33,7 +33,9 @@ extension HomeView {
                             }
                             .onTapGesture {
                                 selectedId = malId
-                                showDetails = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05){
+                                    showDetails = true
+                                }
                             }
                         }
                         .onAppear{
@@ -91,7 +93,9 @@ extension HomeView {
             )
             .onTapGesture {
                 selectedId = malId
-                showDetails = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05){
+                    showDetails = true
+                }
             }
         )
     }

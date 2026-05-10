@@ -280,7 +280,16 @@ extension AnimeView{
                     if totalEps > 0 {
                         Text("Watched: \(draftEps) / \(totalEps)")
                         Slider(
-                            value: Binding(get: {Double(draftEps)}, set: {draftEps = Int($0)}),
+                            value: Binding(get: {Double(draftEps)},
+                                           set: {
+                                               draftEps = Int($0)
+                                               if draftEps > 0 && draftStatus == .planToWatch{
+                                                   draftStatus = .watching
+                                               }
+                                               if draftEps == totalEps && totalEps > 0 {
+                                                   draftStatus = .completed
+                                               }
+                                           }),
                             in:0...Double(max(0,totalEps)),
                             step: 1
                         )
@@ -293,7 +302,12 @@ extension AnimeView{
                 Section("Score"){
                     Text("Score: \(draftScore)")
                     Slider(
-                        value: Binding(get: {Double(draftScore)}, set: {draftScore = Int($0)}),
+                        value: Binding(get: {Double(draftScore)}, set: {
+                            draftScore = Int($0)
+                            if draftScore > 0 && draftStatus == .planToWatch {
+                                draftStatus = .watching
+                            }
+                        }),
                         in:0...10,
                         step: 1
                     )

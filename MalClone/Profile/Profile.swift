@@ -85,6 +85,9 @@ struct ProfileView: View {
                         
                         if selectedTab == 0 {
                             WatchListView()
+                                .onAppear {
+                                    watchlist = LocalStore.shared.user.watchlist
+                                }
                         }
                         
                         else {

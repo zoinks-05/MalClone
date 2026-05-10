@@ -97,7 +97,7 @@ extension ProfileView {
                 }
             }
         }
-        .frame(maxWidth:350, maxHeight: .infinity)
+        .frame(maxWidth:.infinity, maxHeight: .infinity)
         .padding(12)
         .background(Color(.secondarySystemBackground))
         .cornerRadius(12)

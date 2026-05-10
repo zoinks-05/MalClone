@@ -8,7 +8,9 @@
 import Foundation
 
 extension SearchView{
+    // Fetch query logic
     func fetchQuery() async {
+        // clean up query and make sure its not empty
         guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         isLoading = true
         currentPage = 1
@@ -29,7 +31,9 @@ extension SearchView{
         isLoading = false
     }
     
+    // Get the next page
     func nextPage() async {
+        // Make sure there is even another page
         guard !isFetchingMore, pageData["has_next_page"] as? Bool == true else { return }
         isFetchingMore = true
         currentPage += 1

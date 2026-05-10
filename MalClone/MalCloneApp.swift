@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct MalCloneApp: App {
     init(){
+        // Default Purple Tone
         UIView.appearance().tintColor = UIColor(.purple)
     }
     var body: some Scene {

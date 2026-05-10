@@ -6,6 +6,7 @@
 //
 import Foundation
 
+// Review model for anime
 struct Review: Codable, Identifiable {
     var id: UUID = UUID()
     var animeId: Int

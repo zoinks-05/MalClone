@@ -46,7 +46,6 @@ struct ProfileView: View {
         NavigationStack {
             VStack {
                 Image(systemName: "person.crop.circle")
-                    .foregroundStyle(.secondary)
                     .font(.system(size: 75))
                     .padding(10)
                     .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 100))
@@ -71,7 +70,6 @@ struct ProfileView: View {
                     } label: {
                         Text("Edit Profile")
                             .frame(maxWidth: .infinity, alignment: .center)
-                            .foregroundStyle(.black)
                     }
                     .sheet(isPresented: $showEditProfileSheet){
                         editProfileView(username: username, bio: bio)

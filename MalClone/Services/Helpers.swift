@@ -6,12 +6,14 @@
 //
 import SwiftUI
 
+// Helper for accessing images easily
 func imageURL(_ anime: [String: Any]) -> URL? {
     let images = anime["images"] as? [String: Any]
     let jpg    = images?["jpg"]  as? [String: Any]
     return URL(string: jpg?["image_url"] as? String ?? "")
 }
 
+// Helper for various tags for an anime card often used in top and search view
 @ViewBuilder
 func tags(_ anime: [String: Any]) -> some View {
     if let ep = anime["episodes"] as? Int{
@@ -45,6 +47,7 @@ func tags(_ anime: [String: Any]) -> some View {
     }
 }
 
+// column adjustments for various display sizes
 func columns(for w: CGFloat)  -> Int {
     if w >= 1024 { return 6}
     if w >= 768 {return 4}

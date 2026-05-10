@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// used for sheet navigation
 struct AnimeID: Identifiable, Equatable {
     let id: Int
 }
@@ -24,16 +25,23 @@ struct SearchView: View{
 
     var body: some View{
         VStack (spacing: 0) {
+            // Search controls
             HStack{
+                
+                // Search Bar
                 HStack{
                     Image(systemName: "magnifyingglass")
                         .foregroundStyle(.secondary)
                     TextField("Search anime...", text: $query)
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)
+                    
+                    // Search  when enter pressed
                         .onSubmit {
                             Task { await fetchQuery() }
                         }
+                    
+                    // Clear button
                     if !query.isEmpty {
                         Button {
                             query = ""
@@ -47,6 +55,7 @@ struct SearchView: View{
                 .padding(12)
                 .background(.ultraThickMaterial, in: RoundedRectangle(cornerRadius: 100))
                 
+                // Toggle asc / desc
                 Button{
                     sortType = sortType == "asc" ? "desc" : "asc"
                     Task { await fetchQuery() }
@@ -57,6 +66,7 @@ struct SearchView: View{
                         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 100))
                 }
                 
+                // Sort order menu
                 Menu{
                     ForEach(OrderBy.allCases, id: \.self) { opt in
                         Button{
@@ -82,12 +92,17 @@ struct SearchView: View{
             .padding(.top, 8)
             .padding(.bottom, 8)
             
+            // Initial loading state
             if isLoading {
                 ProgressView()
                     .frame(maxWidth:.infinity, maxHeight: .infinity)
+                
+            // Show results
             } else if !res.isEmpty {
                 CardLogic
                     .frame(maxWidth:.infinity, maxHeight: .infinity)
+                
+            // Empty state
             } else{
                 Spacer()
             }

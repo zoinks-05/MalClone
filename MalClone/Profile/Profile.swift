@@ -45,23 +45,23 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Image(systemName: "person.crop.circle")
+                Image(systemName: "person.crop.circle") // Profile picture
                     .font(.system(size: 75))
                     .padding(10)
                     .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 100))
                 List {
                     Section("Username:") {
-                        Text(username)
+                        Text(username) // Displays current username
                     }
                     
                     Section("Bio:") {
-                        if bio.isEmpty {
+                        if bio.isEmpty { // If user's bio is empty
                             Text(username + " has not added a bio.")
                                 .foregroundStyle(.secondary)
                         }
                             
                         else {
-                            Text(bio)
+                            Text(bio) // Displays current bio
                         }
                     }
                     
@@ -71,12 +71,12 @@ struct ProfileView: View {
                         Text("Edit Profile")
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
-                    .sheet(isPresented: $showEditProfileSheet){
+                    .sheet(isPresented: $showEditProfileSheet) {
                         editProfileView(username: username, bio: bio)
-                    }
+                    } // Presents the edit profile view over the current view
                     
-                    Section() {
-                        Picker("", selection: $selectedTab){
+                    Section() { // Allows you to change what you see between watchlist and reviews
+                        Picker("", selection: $selectedTab) {
                             Text("Your Watchlist").tag(0)
                             Text("Your Reviews").tag(1)
                         }
@@ -101,8 +101,4 @@ struct ProfileView: View {
             }
         }
     }
-}
-
-#Preview {
-    ProfileView()
 }

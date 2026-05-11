@@ -1,4 +1,3 @@
-# [Link to GitHub](https://github.com/zoinks-05/MalClone)
 # MyAnimeArray
 ### A native iOS/iPadOS anime tracking built with SwiftUI. Browse seasonal and top anime, search the full catalogue, track your watchlist, write reviews, and score shows. All stored locally no account needed!
 ## Tech Stack

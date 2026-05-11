@@ -97,7 +97,7 @@ extension ProfileView {
                 }
             }
         }
-        .frame(maxWidth:350, maxHeight: .infinity)
+        .frame(maxWidth:.infinity, maxHeight: .infinity)
         .padding(12)
         .background(Color(.secondarySystemBackground))
         .cornerRadius(12)
@@ -199,6 +199,7 @@ extension ProfileView {
                             showRemovalAlert = false
                         }
                         deleteThisAnime = nil
+                        watchlist = LocalStore.shared.user.watchlist
                     }
                     Button("Cancel", role: .cancel) {
                         deleteThisAnime = nil

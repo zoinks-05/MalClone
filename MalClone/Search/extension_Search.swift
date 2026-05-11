@@ -8,13 +8,18 @@
 import SwiftUI
 
 extension SearchView {
+    
+    // Anime grid
     var CardLogic: some View{
         GeometryReader { geo in
+            
+            // Responsive columns
             let col = columns(for: geo.size.width)
             let gridItems: [GridItem] = Array(repeating: GridItem(.flexible(), spacing: 12), count: col)
             
             ScrollView {
                 LazyVGrid(columns: gridItems, spacing: 16)  {
+                    // Anime Card
                     ForEach(res.indices, id: \.self) { i in
                         let anime = res[i]
                         VStack(spacing: 0) {
@@ -50,6 +55,7 @@ extension SearchView {
                             
                             Spacer()
                         }
+                        // Open anime details
                         .onTapGesture {
                             if let id = anime["mal_id"] as? Int {
                                 selectedId = AnimeID(id: id)
@@ -57,6 +63,8 @@ extension SearchView {
                         }
                         .padding(6)
                         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+                        
+                        // Infinte scrolling
                         .onAppear {
                             if i ==  res.count - 1{
                                 Task { await nextPage()}
@@ -65,6 +73,7 @@ extension SearchView {
                     }
                     .padding(.horizontal, 12)
                     
+                    // Bottom loading indicator
                     if isFetchingMore{
                         ProgressView()
                             .frame(maxWidth: .infinity)
@@ -73,6 +82,7 @@ extension SearchView {
                     }
                 }
             }
+            // Anime details sheet
             .sheet(item: $selectedId) { animeID in
                 NavigationStack {
                     AnimeView(id: animeID.id)

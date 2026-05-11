@@ -16,6 +16,7 @@ struct ContentView: View {
     var body: some View{
         VStack(spacing: 0){
             
+            // Header with title
             HStack(spacing: 8) {
                 
                 Image(systemName: "bolt.fill")
@@ -32,12 +33,7 @@ struct ContentView: View {
             .padding(.vertical, 12)
             .background(Color(red: 0.4, green: 0, blue: 0.6))
             
-            
-            //NOTE Text(String) is temporary once you make a view
-            // Example:
-            // HomeView()
-            // .tag
-            // .tabItem
+            // Navbar
             TabView(selection: $selectedTab){
                 HomeView()
                     .tag(Tab.home)
@@ -53,9 +49,6 @@ struct ContentView: View {
                 ProfileView()
                     .tag(Tab.profile)
                     .tabItem{Label("Profile", systemImage: "person.fill")}
-                DemoView()
-                    .tag(Tab.demo)
-                    .tabItem{Label("demo", systemImage: "gearshape.fill")}
             }
             .tabViewStyle(.sidebarAdaptable)
         }

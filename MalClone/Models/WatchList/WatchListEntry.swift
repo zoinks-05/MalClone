@@ -6,6 +6,7 @@
 //
 import Foundation
 
+// Status of anime in a users watchlist
 enum WatchStatus: String, Codable, CaseIterable{
     case watching = "Watching"
     case completed = "Completed"
@@ -13,6 +14,7 @@ enum WatchStatus: String, Codable, CaseIterable{
     case dropped = "Dropped"
 }
 
+// Single watchlist entry for an anime
 struct WatchListEntry: Codable, Identifiable {
     var id: Int
     var title: String

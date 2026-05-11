@@ -74,7 +74,7 @@ struct AnimeView: View{
         .frame(maxHeight: .infinity, alignment: .top)
         .task{
             await fetchAll()
-            hasEntered = LocalStore.shared.isEntered(id: id) ?? false
+            hasEntered = LocalStore.shared.isEntered(id: id)
         }
         
     }

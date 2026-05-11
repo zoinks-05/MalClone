@@ -7,6 +7,7 @@
 
 import Foundation
 
+// User model storing profile data
 struct User: Codable{
     var id: UUID = UUID()
     var name: String
@@ -14,5 +15,6 @@ struct User: Codable{
     var watchlist: [WatchListEntry]
     var reviews: [Review]
     
+    // default guest user
     static var guest = User(name: "Guest", bio: "", watchlist: [], reviews: [])
 }

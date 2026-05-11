@@ -9,6 +9,7 @@ import SwiftUI
 
 extension AnimeView{
     
+    // Review view
     func ReviewView() -> some View{
         let username = LocalStore.shared.user.name
         let score = LocalStore.shared.getWatchlist(id: id)?.score
@@ -28,7 +29,7 @@ extension AnimeView{
             .padding(.bottom, 10)
             .disabled(!hasEntered)
             
-            
+            // Check if reviews are empty and deal with it accordingly
             if reviews.isEmpty {
                 ContentUnavailableView("No Reviews", systemImage: "pencil.slash", description: Text("You have not reviewed this anime yet"))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -42,6 +43,7 @@ extension AnimeView{
         }
     }
 
+    // Review card
     func ReviewCard(review: Review, username: String, score: Int) -> some View{
         VStack(alignment: .leading){
             Text(review.title)
@@ -96,6 +98,7 @@ extension AnimeView{
         .cornerRadius(12)
     }
     
+    // View for publishing review
     func reviewPublishView() -> some View{
         NavigationStack{
            Form{
@@ -136,6 +139,7 @@ extension AnimeView{
        }
     }
     
+    // Header view
     func header() -> some View{
         HStack(alignment: .bottom){
             AsyncImage(url: imageURL(anime)){ s in
@@ -230,6 +234,7 @@ extension AnimeView{
 
     }
     
+    // Card for related anime
     func relatedCard(item: [String: Any], relation: String) -> some View{
         VStack(alignment: .leading) {
                 Text(item["name"] as? String ?? "N/A")
@@ -249,6 +254,7 @@ extension AnimeView{
             .cornerRadius(12)
     }
     
+    // Main card view
     func MainCard(label: String, value: String, condition: Binding<Bool> ) -> some View{
         VStack(alignment: .leading) {
             Text(label)
@@ -270,6 +276,7 @@ extension AnimeView{
         .cornerRadius(12)
     }
     
+    // View for adding to watchlist
     func addToWatchListView() -> some View{
         
         let totalEps = anime["episodes"] as? Int ?? 0
@@ -282,6 +289,7 @@ extension AnimeView{
                         Slider(
                             value: Binding(get: {Double(draftEps)},
                                            set: {
+                                               // adjust watchstatus depending on eps watched
                                                draftEps = Int($0)
                                                if draftEps > 0 && draftStatus == .planToWatch{
                                                    draftStatus = .watching
@@ -304,6 +312,7 @@ extension AnimeView{
                     Slider(
                         value: Binding(get: {Double(draftScore)}, set: {
                             draftScore = Int($0)
+                            // change watchstatus depending on score
                             if draftScore > 0 && draftStatus == .planToWatch {
                                 draftStatus = .watching
                             }
@@ -345,6 +354,7 @@ extension AnimeView{
         }
     }
     
+    // View for stats for an anime
     func detailView() -> some View{
         VStack{
             Text(anime["title"] as? String ?? "Unknown Title")
@@ -421,6 +431,7 @@ extension AnimeView{
         }
     }
     
+    // Styling for stats as row
     func tagRow(label: String, tags: [String]) -> some View{
         VStack(alignment: .leading, spacing: 2){
             Text(label)
@@ -444,6 +455,7 @@ extension AnimeView{
         .cornerRadius(12)
     }
     
+    //Styling for stats
     func stat(label: String, value: String) -> some View{
         VStack(alignment: .leading, spacing: 2){
             Text(label)
@@ -459,6 +471,7 @@ extension AnimeView{
         .cornerRadius(12)
     }
     
+    // Card for character
     func charCard() -> some View{
         VStack(alignment: .leading){
             Text("Characters")
@@ -505,6 +518,7 @@ extension AnimeView{
         .cornerRadius(12)
     }
     
+    // Card for related animes
     func relationCard(related: [[String: Any]]) -> some View{
         VStack(alignment: .leading){
             Text("Related")

@@ -35,8 +35,10 @@ struct HomeView: View{
     @State   var timer: Timer? = nil
     
     var body: some View{
+        // Main home view
         ScrollView{
             VStack{
+                // Check if everything has loaded
                 if !isReady && !isFullyReady{
                     ProgressView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -54,6 +56,8 @@ struct HomeView: View{
                     .frame(height: 275)
                     .clipped()
                     .onAppear {
+                        // Timer for carasoul
+                        // Check to make sure no extra timers created
                         guard timer == nil else {return}
                         timer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
                             guard !caraDeets.isEmpty else {return}
@@ -81,6 +85,7 @@ struct HomeView: View{
             }
             .padding()
             .task {
+                // Ready guard protection
                 guard !isFullyReady else {return}
                 await loadInit()
                 

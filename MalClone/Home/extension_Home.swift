@@ -50,6 +50,7 @@ extension HomeView {
             
             Divider()
                 .padding()
+            
         }
     }
     

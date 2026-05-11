@@ -8,6 +8,7 @@
 import Foundation
 
 extension AnimeView{
+    // Fetch for all details related to the anime
     func fetchAll() async {
         guard id > 0 else {return}
         isLoading = true

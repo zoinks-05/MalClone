@@ -33,6 +33,7 @@ struct AnimeView: View{
     
     var body: some View{
         VStack(spacing: 0) {
+            // Check if anime fetching is done or not
             if anime.isEmpty {
                 ProgressView()
                     .frame(maxHeight: .infinity, alignment: .center)
